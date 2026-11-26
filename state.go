@@ -87,10 +87,9 @@ const (
 )
 
 type Reader struct {
-	largeWindow bool
-	src         io.Reader
-	buf         []byte // scratch space for reading from src
-	in          []byte // current chunk to decode; usually aliases buf
+	src io.Reader
+	buf []byte // scratch space for reading from src
+	in  []byte // current chunk to decode; usually aliases buf
 
 	state        int
 	loop_counter int

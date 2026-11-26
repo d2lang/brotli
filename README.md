@@ -1,19 +1,30 @@
-This package is a brotli compressor and decompressor implemented in Go.
-It was translated from the reference implementation (https://github.com/google/brotli)
-with the `c2go` tool at https://github.com/andybalholm/c2go.
+# d2lang/brotli
 
-I am using it in production with https://github.com/andybalholm/redwood.
+A trimmed fork of [andybalholm/brotli](https://github.com/andybalholm/brotli),
+a pure-Go brotli compressor and decompressor translated from the reference
+implementation (https://github.com/google/brotli) with the `c2go` tool at
+https://github.com/andybalholm/c2go. All credit for the code goes to its
+upstream authors; see LICENSE.
 
-API documentation is found at https://pkg.go.dev/github.com/andybalholm/brotli?tab=doc.
+This fork exists for [D2](https://github.com/d2lang/d2), which compiles to
+WebAssembly. Upstream's `http.go` imports `net/http`, and importing a package
+links its initialization (and much of `crypto/x509`, `encoding/asn1` and
+friends) into the WebAssembly module even though nothing calls it. This fork
+keeps only what D2 uses:
 
-## Roadmap
+- `NewReader`, `Reader` (decoder)
+- `NewWriter`, `NewWriterLevel`, `NewWriterOptions`, `WriterOptions`, `Writer`
+  and the compression level constants (the encoder translated from C)
 
-I have been working on new compression algorithms (not translated from C)
-in the matchfinder package.
-You can use them with the NewWriterV2 function.
-Currently they give better results than the old implementation
-(at least for compressing my test file, Newton’s *Opticks*) 
-on levels 0 to 9.
+Removed from upstream v1.3.0:
 
-The new APIs are currently considered experimental,
-and are not covered by any SemVer compatibility guarantees.
+- `http.go` (`HTTPCompressor`, `HTTPCompressorWithLevel`)
+- the `matchfinder` package, `NewWriterV2`, `Encoder` and `FastEncoder`
+- the `flate` package and the `corpus-test` command
+- `NewReaderOptions` and `ReaderOptions` (large-window decoding)
+- the tests of the removed code, and with them the test dependency on
+  `github.com/xyproto/randomstring`
+- `SECURITY.md` (report vulnerabilities in the code itself upstream)
+
+The remaining code is unchanged from upstream apart from deleting unexported
+helpers that nothing calls any more. If you are not D2, use upstream.
