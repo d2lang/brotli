@@ -13,6 +13,7 @@ friends) into the WebAssembly module even though nothing calls it. This fork
 keeps only what D2 uses:
 
 - `NewReader`, `Reader` (decoder)
+- `EncodeFast` (one-shot quality 1 encoder with an 18-bit window)
 - `NewWriter`, `NewWriterLevel`, `NewWriterOptions`, `WriterOptions`, `Writer`
   and the compression level constants (the encoder translated from C)
 
